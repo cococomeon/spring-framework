@@ -32,6 +32,7 @@ task objenesisRepackJar(type: ShadowJar) {
 }
 
 dependencies {
+	compile("org.slf4j:slf4j-api:1.7.30")
 	cglib("cglib:cglib:${cglibVersion}@jar")
 	objenesis("org.objenesis:objenesis:${objenesisVersion}@jar")
 	coroutines(project(path: ":kotlin-coroutines", configuration: 'classesOnlyElements'))

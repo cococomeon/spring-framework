@@ -21,6 +21,8 @@ import javax.inject.Named;
 
 import org.junit.jupiter.api.Test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BridgeMethodAutowiringTests {
 
+	static Logger logger = LoggerFactory.getLogger(BridgeMethodAutowiringTests.class);
 	@Test
 	public void SPR8434() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
@@ -35,6 +38,18 @@ public class BridgeMethodAutowiringTests {
 		ctx.refresh();
 		assertThat(ctx.getBean(UserServiceImpl.class).object).isNotNull();
 	}
+	
+	public static void main(String[] args) {
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+//		ctx.setApplicationStartup();
+		ctx.register(UserServiceImpl.class, Foo.class);
+		ctx.refresh();
+		assertThat(ctx.getBean(UserServiceImpl.class).object).isNotNull();
+		
+		logger.info("haa");
+	}
+	
+	
 
 
 	static abstract class GenericServiceImpl<D> {

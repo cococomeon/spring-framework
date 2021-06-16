@@ -133,8 +133,9 @@ import org.springframework.util.ReflectionUtils;
  * @see org.springframework.context.ApplicationListener
  * @see org.springframework.context.MessageSource
  */
-public abstract class AbstractApplicationContext extends DefaultResourceLoader
+public abstract class  AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
+	
 
 	/**
 	 * Name of the MessageSource bean in the factory.
@@ -545,45 +546,71 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
-
+			
+			logger.info("phrse:prepareRefresh start");
 			// Prepare this context for refreshing.
 			prepareRefresh();
-
+			logger.info("phrse:prepareRefresh end");
+			
+			logger.info("obtainFreshBeanFactory start");
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
-
+			logger.info("obtainFreshBeanFactory end");
+			
+			logger.info("prepareBeanFactory start");
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
+			logger.info("prepareBeanFactory end");
 
 			try {
+				logger.info("postProcessBeanFactory start");
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
+				logger.info("postProcessBeanFactory end");
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
+				
+				logger.info("invokeBeanFactoryPostProcessors start");
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
+				logger.info("invokeBeanFactoryPostProcessors end");
 
+				logger.info("registerBeanPostProcessors start");
 				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
+				logger.info("registerBeanPostProcessors end");
+				
 				beanPostProcess.end();
 
+				logger.info("initMessageSource start");
 				// Initialize message source for this context.
 				initMessageSource();
+				logger.info("initMessageSource end");
 
 				// Initialize event multicaster for this context.
+				logger.info("initApplicationEventMulticaster start");
 				initApplicationEventMulticaster();
-
+				logger.info("initApplicationEventMulticaster end");
+				
 				// Initialize other special beans in specific context subclasses.
+				logger.info("onRefresh start");
 				onRefresh();
+				logger.info("onRefresh end");
 
+				logger.info("registerListeners start");
 				// Check for listener beans and register them.
 				registerListeners();
+				logger.info("registerListeners end");
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				logger.info("finishBeanFactoryInitialization start");
 				finishBeanFactoryInitialization(beanFactory);
+				logger.info("finishBeanFactoryInitialization end");
 
 				// Last step: publish corresponding event.
+				logger.info("finishRefresh start");
 				finishRefresh();
+				logger.info("finishRefresh end");
 			}
 
 			catch (BeansException ex) {

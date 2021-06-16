@@ -16,6 +16,9 @@
 
 package org.springframework.core.metrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.function.Supplier;
@@ -28,22 +31,29 @@ import java.util.function.Supplier;
  * @author Brian Clozel
  */
 class DefaultApplicationStartup implements ApplicationStartup {
+	public static Logger logger = LoggerFactory.getLogger(DefaultApplicationStartup.class);
 
-	private static final DefaultStartupStep DEFAULT_STARTUP_STEP = new DefaultStartupStep();
+//	private static final DefaultStartupStep DEFAULT_STARTUP_STEP = new DefaultStartupStep();
 
 	@Override
 	public DefaultStartupStep start(String name) {
-		return DEFAULT_STARTUP_STEP;
+		logger.info(name + " starting");
+		return new DefaultStartupStep(name);
 	}
 
 
 	static class DefaultStartupStep implements StartupStep {
 
 		private final DefaultTags TAGS = new DefaultTags();
-
+		
+		String name;
+		public DefaultStartupStep(String name) {
+			this.name = name;
+		}
+		
 		@Override
 		public String getName() {
-			return "default";
+			return name;
 		}
 
 		@Override
@@ -73,7 +83,7 @@ class DefaultApplicationStartup implements ApplicationStartup {
 
 		@Override
 		public void end() {
-
+			DefaultApplicationStartup.logger.info(name + " started");
 		}
 
 
